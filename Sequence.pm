@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.05';
+$VERSION = '1.0';
 
 use DBI;
 use Carp;
@@ -607,6 +607,17 @@ need to pass a second parameter to new().
 	my $next_id = $sequence->Next($dataset);
 
 
+
+=head1 CVS AND BLEEDING VERSIONS
+
+The latest developments and changes history for this module are available through cvsweb at:
+
+http://cvs.flatlineconstruct.com/
+
+The bleeding edge code is also available through anonymous CVS access via:
+
+cvs -d:pserver:anoncvs@cvs.flatlineconstruct.com:/home/cvs/anon checkout DBIx-Sequence 
+
 =head1 TODO
 
 =over 3
@@ -628,15 +639,7 @@ This code was made possible by the help of individuals:
 	Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
 	Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
-And the team of the SmartWorker Project <http://www.smartworker.org>
-
-=head1 SUPPORT
-
-Support is available from the SmartWorker Project mailing list.
-Subscribe via http://www.smartworker.org.
-
-Support is also available by contacting me directly :
-<bbeausej@pobox.com>
+Thanks to Uri Guttman for documentation checks ;)
 
 =head1 SEE ALSO
 

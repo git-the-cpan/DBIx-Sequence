@@ -200,6 +200,18 @@ BASIC USAGE
             my $sequence = new MySequence();
             my $next_id = $sequence->Next($dataset);
 
+CVS AND BLEEDING VERSIONS
+    The latest developments and changes history for this module are
+    available through cvsweb at:
+
+    http://cvs.flatlineconstruct.com/
+
+    The bleeding edge code is also available through anonymous CVS access
+    via:
+
+    cvs -d:pserver:anoncvs@cvs.flatlineconstruct.com:/home/cvs/anon checkout
+    DBIx-Sequence
+
 TODO
     * Implement multiple locking mechanism (semaphore, spin, db locker)
     * Implement pluggable locking module support
@@ -212,14 +224,7 @@ NOTES
             Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
             Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
-    And the team of the SmartWorker Project <http://www.smartworker.org>
-
-SUPPORT
-    Support is available from the SmartWorker Project mailing list.
-    Subscribe via http://www.smartworker.org.
-
-    Support is also available by contacting me directly :
-    <bbeausej@pobox.com>
+    Thanks to Uri Guttman for documentation checks ;)
 
 SEE ALSO
     perl(1).

@@ -21,3 +21,7 @@ Revision history for Perl extension DBIx::Sequence.
 	- Putted in uri's documentation fixups. (mostly its vs it's)
 	- Fixed a call to _Create_Dataset in the Bootstrap() method that lacked the dataset as arguments.
 	- todo : Implement testing for Bootstrapping in extended tests.
+
+1.0  Thu Jul 8 14:34:12 2001
+	- Documentation fixups, CVS links added.
+	- Official 1.0 release.
