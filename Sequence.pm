@@ -2,14 +2,14 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.4';
+$VERSION = '1.5';
 
 use DBI;
 use Carp;
 
 use constant COLUMN_PREFIX => '';
 use constant DEFAULT_INIT_VALUE => 1;
-use constant ALLOW_ID_REUSE => 1;
+use constant DEFAULT_ALLOW_ID_REUSE => 1;
 use constant DEBUG_LEVEL => 0;
 use constant DEFAULT_STATE_TABLE => 'dbix_sequence_state';
 use constant DEFAULT_RELEASE_TABLE => 'dbix_sequence_release';
@@ -26,12 +26,14 @@ sub new
 
 	$self->{state_table} = $args->{state_table};
 	$self->{release_table} = $args->{release_table};
+	$self->{_arg_reuse} = $args->{allow_id_reuse} if(exists $args->{allow_id_reuse});
 
 	delete $self->{db_user};
 	delete $self->{db_pw};
 	delete $self->{db_dsn};
 
 	$self->_InitQueries();
+
 
 	return $self; 
 }
@@ -66,7 +68,7 @@ sub Next
 		return $self->DEFAULT_INIT_VALUE();
 	}
 
-	if($self->ALLOW_ID_REUSE())
+	if($self->_AllowedReuse())
 	{
 		my $released_ids_sth = $self->{_released_ids_sth};
 
@@ -74,9 +76,10 @@ sub Next
 
 		while(my $released_id = $released_ids_sth->fetchrow())
 		{
-			if($self->_release_race_for($dataset, $released_id))
+			if($self->_release_race_for($dataset, ( $released_id =~ m/^(\d+)$/ )[0] ))
 			{
 				print STDERR "Returning released id $released_id\n" if $self->DEBUG_LEVEL();
+				$released_ids_sth->finish;
 				return $released_id;
 			}
 		}
@@ -101,7 +104,7 @@ sub Currval
 
 	my $current_sth = $self->{_current_sth};
 	$current_sth->execute($dataset) || croak __PACKAGE__.": $DBI::errstr";
-	my ($c_dataset, $current_id) = $current_sth->fetchrow();
+	my ($c_dataset, $current_id) = $current_sth->fetchrow(); $current_sth->finish;
 
 	print STDERR "Returning CURRVAL $current_id for $c_dataset\n";
 	return $current_id;
@@ -120,7 +123,7 @@ sub Release
 	print STDERR "Asked to release id $release_id in dataset $dataset\n" if $self->DEBUG_LEVEL();
 
 
-	if($self->ALLOW_ID_REUSE())
+	if($self->_AllowedReuse())
 	{	
 		my $release_id_sth = $self->{_release_id_sth};
 	
@@ -183,7 +186,7 @@ sub Bootstrap
 	my $bootstrap_sth = $self->{_dbh}->prepare($bootstrap_query) || croak __PACKAGE__.": $DBI::errstr";
 	$bootstrap_sth->execute() || croak __PACKAGE__.": $DBI::errstr";
 
-	my $bootstrap_id = $bootstrap_sth->fetchrow();
+	my $bootstrap_id = $bootstrap_sth->fetchrow(); $bootstrap_sth->finish;
 
 	croak "Bootstrap() failed" if(!$bootstrap_id);
 
@@ -209,7 +212,7 @@ sub _Create_Dataset
 	my $init_sth = $self->{_init_sth};
 
         $current_sth->execute($dataset) || croak __PACKAGE__.": $DBI::errstr";
-        my ($c_dataset, $current_id) = $current_sth->fetchrow();
+        my ($c_dataset, $current_id) = $current_sth->fetchrow(); $current_sth->finish;
 
         if(!$c_dataset)
         {
@@ -237,6 +240,21 @@ sub RELEASE_TABLE
 	return $self->{release_table} || $self->DEFAULT_RELEASE_TABLE();
 }
 	
+sub _AllowedReuse
+{
+	my $self = shift;
+
+	if(exists $self->{_arg_reuse})
+	{
+		return undef if($self->{_arg_reuse} =~ /no/i);
+		return 1 if($self->{_arg_reuse});
+		return undef;
+	}
+	else
+	{
+		return $self->DEFAULT_ALLOW_ID_REUSE();
+	}
+}
 		
 sub _race_for
 {
@@ -255,7 +273,7 @@ sub _race_for
 	while($got_id == 0)
 	{
 		$current_sth->execute($dataset) || croak __PACKAGE__.": $DBI::errstr"; 
-		$current_id = $current_sth->fetchrow();
+		$current_id = ($current_sth->fetchrow() =~ m/^(\d+)$/ )[0]; $current_sth->finish;
 
 		if(!$race_for_id || $race_for_id <= $current_id)
 		{ 
@@ -463,6 +481,7 @@ First, you need to create the sequence object:
 						db_user => 'scott',
 						db_pw => 'tiger',
 						db_dsn => 'dbi:mysql:scottdb',
+						allow_id_reuse => 1,
 						});
 
 DBIx::Sequence can be used to manage multiple sets of ID's (perhaps you could have one dataset 
@@ -476,7 +495,8 @@ in a hash reference.
 
 At this point, the object has pre cached all of the SQL that will be used to generate
 the spin locker race. It is normally a good idea to have a shared sequence object (especially)
-under mod_perl to save the prepare overhead. 
+under mod_perl to save the prepare overhead.  The 'allow_id_reuse' argument can be passed to 
+the constructor to either allow the use of the Release() or deny it. (True value makes it allowed)
 
 =head2 GETTING THE NEXT ID
 
@@ -557,7 +577,7 @@ of DBIx::Sequence are some constants:
 
 =item * DEFAULT_INIT_VALUE : Value used to initialize a dataset when it is first created.
 
-=item * ALLOW_ID_REUSE : When set to true, will allow the use of Release().
+=item * DEFAULT_ALLOW_ID_REUSE : When set to true, will allow the use of Release() if not specified in the constructor. (allow_id_reuse)
 
 =item * DEBUG_LEVEL : When set to true, will enable debugging to STDERR.
 
@@ -586,7 +606,7 @@ i.e.
 	use constant RELEASE_TABLE => 'my_release_table';
 	use constant COLUMN_PREFIX => '';
 	use constant DEFAULT_INIT_VALUE => '100';
-	use constant ALLOW_ID_REUSE => 1;
+	use constant DEFAULT_ALLOW_ID_REUSE => 1;
 	use constant DEBUG_LEVEL => 0;
 
 	sub getDbh
@@ -650,6 +670,15 @@ This code was made possible by the help of individuals:
 Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
 Thanks to Uri Guttman for documentation checks ;)
+
+=head1 CONTRIBUTORS
+
+Here are the people who submitted patches and changes to the module, they have 
+my thanks for their contributions:
+
+Trevor Shellhorn <trevor.schellhorn-perl@marketingtips.com>
+
+Dan Kubb <dkubb@cpan.org>
 
 =head1 SEE ALSO
 

@@ -62,6 +62,7 @@ BASIC USAGE
                                                     db_user => 'scott',
                                                     db_pw => 'tiger',
                                                     db_dsn => 'dbi:mysql:scottdb',
+                                                    allow_id_reuse => 1,
                                                     });
 
     DBIx::Sequence can be used to manage multiple sets of ID's (perhaps you
@@ -78,7 +79,9 @@ BASIC USAGE
     At this point, the object has pre cached all of the SQL that will be
     used to generate the spin locker race. It is normally a good idea to
     have a shared sequence object (especially) under mod_perl to save the
-    prepare overhead.
+    prepare overhead. The 'allow_id_reuse' argument can be passed to the
+    constructor to either allow the use of the Release() or deny it. (True
+    value makes it allowed)
 
   GETTING THE NEXT ID
 
@@ -153,7 +156,8 @@ BASIC USAGE
     internal SQL statements.
     * DEFAULT_INIT_VALUE : Value used to initialize a dataset when it is
     first created.
-    * ALLOW_ID_REUSE : When set to true, will allow the use of Release().
+    * DEFAULT_ALLOW_ID_REUSE : When set to true, will allow the use of
+    Release() if not specified in the constructor. (allow_id_reuse)
     * DEBUG_LEVEL : When set to true, will enable debugging to STDERR.
     So it is very easy to specify the behaviour of DBIx::Sequence that you
     wish to use by creating an overloaded class.
@@ -179,7 +183,7 @@ BASIC USAGE
             use constant RELEASE_TABLE => 'my_release_table';
             use constant COLUMN_PREFIX => '';
             use constant DEFAULT_INIT_VALUE => '100';
-            use constant ALLOW_ID_REUSE => 1;
+            use constant DEFAULT_ALLOW_ID_REUSE => 1;
             use constant DEBUG_LEVEL => 0;
 
             sub getDbh
@@ -232,6 +236,14 @@ NOTES
     Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
     Thanks to Uri Guttman for documentation checks ;)
+
+CONTRIBUTORS
+    Here are the people who submitted patches and changes to the module,
+    they have my thanks for their contributions:
+
+    Trevor Shellhorn <trevor.schellhorn-perl@marketingtips.com>
+
+    Dan Kubb <dkubb@cpan.org>
 
 SEE ALSO
     perl(1).

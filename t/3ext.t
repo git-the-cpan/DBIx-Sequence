@@ -21,7 +21,7 @@ my $sequence = new DBIx::Sequence({
                                                 db_dsn => $config->{dsn},
                                                 db_user => $config->{user},
                                                 db_pw => $config->{userpw},
-						state_table => $config->{state_table},
+																state_table => $config->{state_table},
                                                 release_table => $config->{release_table},
                                                 }) || &creve("Could now initiate a new DBIx::Sequence object.");
 my $ids = {};

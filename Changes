@@ -32,3 +32,10 @@ Revision history for Perl extension DBIx::Sequence.
 1.3 Mar 25 2002
 	-Documentation update
 	-Switch meta state to mature.
+1.4 - 
+   - Doc update
+1.5 Setp 25 2003
+   - Included Trevor Shellhorn taint/SQL finish patch (tx!)
+	- Implemented the allow_id_reuse constructor parameter that superceded the old ALLOW_ID_REUSE constant.
+	  That specific constant has been renamed DEFAULT_ALLOW_ID_REUSE and now specifies a default value if 
+     the allow_id_reuse parameter is not passed to the constructor. Default is true.  (Dan Kubb's suggestion, tx!)

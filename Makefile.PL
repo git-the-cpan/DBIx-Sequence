@@ -32,7 +32,8 @@ if ($options->{extended_tests})
 	$config->{dsn}           = $options->{dsn};
 	$config->{root}          = $options->{rootuser} || 'root';
 	$config->{rootpw}        = $options->{rootpw};
-	$config->{user}		 = $config->{root};
+	$config->{user}		 	= $config->{root};
+	$config->{userpw} 		= $config->{rootpw};
 	$config->{oracle_home}   = $options->{oracle_home};
 	$config->{state_table}   = $options->{state_table} || 'dbix_sequence_state';
 	$config->{release_table} = $options->{release_table} || 'dbix_sequence_release';
@@ -131,7 +132,7 @@ WriteMakefile(
   'VERSION_FROM' => 'Sequence.pm',                               # finds $VERSION
   'AUTHOR'       => 'Benoit Beausejour <bbeausej\@pobox.com>',
   'clean'        => { 'FILES' => 'pod2html*', },
-  'dist'    => { 'PREOP' => 'pod2text Sequence.pm > README; pod2html Sequence.pm > README.html', },
+  'dist'    => { 'PREOP' => 'pod2text Sequence.pm > README; pod2html Sequence.pm README.html', },
 );
 exit;
 
@@ -142,7 +143,7 @@ sub creve
 	WriteMakefile(
 	  'NAME'         => 'DBIx::Sequence',
 	  'VERSION_FROM' => 'Sequence.pm',
-	  'dist'    => { 'PREOP' => 'pod2text Sequence.pm > README; pod2html Sequence.pm > README.html', },
+	  'dist'    => { 'PREOP' => 'pod2text Sequence.pm > README; pod2html Sequence.pm README.html', },
 	);
 	exit;
 }
