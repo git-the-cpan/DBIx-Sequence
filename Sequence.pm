@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.2';
+$VERSION = '1.3';
 
 use DBI;
 use Carp;
@@ -649,8 +649,6 @@ Benoit Beausejour, <bbeausej@pobox.com>
 =head1 NOTES
 
 This code was made possible by the help of individuals:
-
-Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
 
 Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
