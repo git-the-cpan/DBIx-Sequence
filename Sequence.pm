@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.3';
+$VERSION = '1.4';
 
 use DBI;
 use Carp;
@@ -619,18 +619,15 @@ passed to the sequence object already has transactions prelogged in it.
 
 =head1 CVS AND BLEEDING VERSIONS
 
-The latest developments and changes history for this module are available through cvsweb at:
+For the latest development information, CVS access and Changelog, please visit:
 
-http://cvs.flatlineconstruct.com/
-
-The bleeding edge code is also available through anonymous CVS access via:
-
-cvs -d:pserver:anoncvs@cvs.flatlineconstruct.com:/home/cvs/anon checkout DBIx-Sequence 
+http://labs.turbulent.ca
 
 If you use this module in a project, please let me know!
 
 Your comments and rants are more than welcomed!
 
+Commercial support for this module is available, please contact me for info!
 
 =head1 TODO
 

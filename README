@@ -208,20 +208,17 @@ SPECIAL NOTE ON DATABASE HANDLE OPTIONS
     sequence object already has transactions prelogged in it.
 
 CVS AND BLEEDING VERSIONS
-    The latest developments and changes history for this module are
-    available through cvsweb at:
+    For the latest development information, CVS access and Changelog, please
+    visit:
 
-    http://cvs.flatlineconstruct.com/
-
-    The bleeding edge code is also available through anonymous CVS access
-    via:
-
-    cvs -d:pserver:anoncvs@cvs.flatlineconstruct.com:/home/cvs/anon checkout
-    DBIx-Sequence
+    http://labs.turbulent.ca
 
     If you use this module in a project, please let me know!
 
     Your comments and rants are more than welcomed!
+
+    Commercial support for this module is available, please contact me for
+    info!
 
 TODO
     * Implement multiple locking mechanism (semaphore, spin, db locker)
