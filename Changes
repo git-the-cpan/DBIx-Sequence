@@ -11,3 +11,9 @@ Revision history for Perl extension DBIx::Sequence.
 	- Some fix of the code where dataset name was not passed to CreateDataset
 	- Changed module name from DBI::Sequence to DBIx::Sequence as per DBI-dev request
 	- Official CPAN Release
+0.03  Tue Jun 6 10:55:12 2001
+	- Fix in Makefile.PL to populate $config->{user} down to the tests
+	- Fixed gozer's and peanut's email addresses in the credits.
+	- Cleaned up output of the tests, less messy.
+	- Added a small performance test to give an idea of the speed on the current host.
+	- Automatic README and README.html generation on make dist.

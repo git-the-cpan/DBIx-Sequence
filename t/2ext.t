@@ -34,12 +34,16 @@ my $parent_pid = $$;
 my $pid;
 open(IDLOG, ">dbi_sequence_test.log") || &creve("Could not open ID LOG: $!");
 
-for my $child (1..5)
+my $ids_per_child = 500;
+my $childs = 5;
+my $total_ids = $ids_per_child * $childs;
+
+for my $child (1..$childs)
 {
 	if($pid = fork())
 	{
 		push @$pids, $pid;
-		print STDERR "Forked $pid\n";
+		print STDERR "Forked $pid, ";
 	}
 	else
 	{
@@ -51,11 +55,11 @@ for my $child (1..5)
                                                 release_table => $config->{release_table},
                                                 }) || &creve("Could now initiate a new DBIx::Sequence object.");
 
-		for(1..200)
+		for(1..$ids_per_child)
 		{
 
 			my $id = $sequence->Next('make_test');
-			#print STDERR ".";
+			print STDERR $id.("\b" x length($id));
 
 			print IDLOG "$id\n";
 			if( $ids->{$id} )
@@ -68,8 +72,7 @@ for my $child (1..5)
 	}
 }
 
-print STDERR "\n\n";	
-
+print "\n";
 foreach my $child (@$pids)
 {
 	waitpid($child,0);
@@ -77,13 +80,13 @@ foreach my $child (@$pids)
 
 close IDLOG;
 
-print STDERR "\n\nReviewing generated id's...\n";
+print STDERR "\nReviewing generated id's...\n";
 open(IDLOG, "dbi_sequence_test.log") || &creve("Could not analyze our log! $!");
 while(<IDLOG>)
 {
 	my $id = $_;
 	chomp $id;
-#	print STDERR ".";
+	print STDERR "$id".("\b" x length($id));
 	if($ids->{$id})
 	{
 		$failed = 1;
@@ -91,6 +94,9 @@ while(<IDLOG>)
 	$ids->{$id} = $id;
 }
 close IDLOG;
+
+print STDERR "Generated a total of: ".(keys %$ids)." ids.\n";
+print STDERR "Should have generated: ".$total_ids." ids.\n\n";
 
 if($failed == 1)
 {	

@@ -2,7 +2,7 @@ do { print "1..0\n"; exit; } if (not -e 't/config.pl');
 
 print "1..1\n";
 
-print STDERR "\n\nTesting ID release...\n";
+print STDERR "\n\nTesting performance...\n";
 use DBIx::Sequence;
 
 my $config;
@@ -17,6 +17,7 @@ if($@)
 
 $ENV{'ORACLE_HOME'} = $config->{oracle_home} if(!$ENV{'ORACLE_HOME'});
 
+my $id_total = 2000;
 my $sequence = new DBIx::Sequence({
                                                 db_dsn => $config->{dsn},
                                                 db_user => $config->{user},
@@ -27,37 +28,22 @@ my $sequence = new DBIx::Sequence({
 my $ids = {};
 my $ids_second = {};
 
-for(1..200)
+use Benchmark;
+my $t0 = new Benchmark;
+
+my $last_print;
+for(1..$id_total)
 {
 	my $id = $sequence->Next('make_test');
-
-	print STDERR "$id".("\b" x length($id));
-	if( $ids->{$id} )
-	{
-		&creve("Sequence generated 2 identical id's.");
-	}
-	$ids->{$id} = $id;
+	print STDERR "$_ ($id)".("\b" x length("$_ ($id)"));
 }	
+my $t1 = new Benchmark;
+$td = timediff($t1, $t0);
+print STDERR "This host can generate $id_total id's in: ", timestr($td), "\n";
+
+
 print STDERR "\n\n";
 
-foreach my $id (keys %$ids)
-{
-	$sequence->Release('make_test',$id);
-	#print STDERR ".";
-}
-
-print STDERR "Verifying releases...\n";
-for(1..200)
-{
-	my $id = $sequence->Next('make_test');
-
-	print STDERR "$id".("\b" x length($id));	
-	if(!$ids->{$id})
-	{
-		&creve("Sequence did not relase ID $id");
-	}
-}
-	
 print "ok 1\n";
 
 

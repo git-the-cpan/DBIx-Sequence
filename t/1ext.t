@@ -25,11 +25,14 @@ my $sequence = new DBIx::Sequence({
 						release_table => $config->{release_table},
 						}) || &creve("Could now initiate a new DBIx::Sequence object.");
 my $ids = {};
-for(1..200)
+
+my $gen_ids = 1000;
+for(1..$gen_ids)
 {
 	my $id = $sequence->Next('make_test');
 
-	print STDERR "$id ";
+	my $length = length($id);
+	print STDERR "$id".("\b"x$length);
 	if( $ids->{$id} )
 	{
 		&creve("Sequence generated 2 identical id's.");

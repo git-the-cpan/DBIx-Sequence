@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use DBI;
 use Carp;
@@ -55,7 +55,7 @@ sub Next
 
 	croak "No dataset specified" if not defined $dataset;
 
-	print STDERR "Request of Next() id\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Request of Next() id\n" if $self->DEBUG_LEVEL();
 
 	my $current_sth = $self->{_current_sth};
 	my $init_sth = $self->{_init_sth};
@@ -75,7 +75,7 @@ sub Next
 		{
 			if($self->_release_race_for($dataset, $released_id))
 			{
-				print STDERR "Returning released id $released_id\n" if $self->DEBUG_LEVEL();;
+				print STDERR "Returning released id $released_id\n" if $self->DEBUG_LEVEL();
 				return $released_id;
 			}
 		}
@@ -87,7 +87,7 @@ sub Next
 		croak __PACKAGE__." was unable to generate a unique id for ".$dataset."\n";
 	}
 
-	print STDERR "Returning new unique id $unique_id\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Returning new unique id $unique_id\n" if $self->DEBUG_LEVEL();
 	return $unique_id;
 }
 
@@ -116,7 +116,7 @@ sub Release
 	croak "No dataset specified" if !$dataset;
 	croak __PACKAGE__." NO ID specified for Release()" if not defined $release_id;
 
-	print STDERR "Asked to release id $release_id in dataset $dataset\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Asked to release id $release_id in dataset $dataset\n" if $self->DEBUG_LEVEL();
 
 
 	if($self->ALLOW_ID_REUSE())
@@ -125,7 +125,7 @@ sub Release
 	
 		if($release_id_sth->execute($dataset, $release_id) ne 'OEO')
 		{
-			print STDERR "Release successful.\n" if $self->DEBUG_LEVEL();;
+			print STDERR "Release successful.\n" if $self->DEBUG_LEVEL();
 			return 1;
 		}	
 		return 0;
@@ -148,12 +148,12 @@ sub Delete_Dataset
 	my $delete_state_sth = $self->{_delete_state_sth};
 	my $delete_release_sth = $self->{_delete_release_sth};
 
-	print STDERR "Deleting dataset ".$dataset."\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Deleting dataset ".$dataset."\n" if $self->DEBUG_LEVEL();
 
 	$delete_state_sth->execute($dataset) || croak __PACKAGE__.": $DBI::errstr";
 	$delete_release_sth->execute($dataset) || croak __PACKAGE__.": $DBI::errstr";
 
-	print STDERR "Deletion successul\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Deletion successul\n" if $self->DEBUG_LEVEL();
 
 	return 1;
 }
@@ -170,14 +170,14 @@ sub Bootstrap
 	croak "No data_field to Bootstrap()" if(!$data_field);
 
 
-	print STDERR "Bootstrapping dataset ". $dataset." with $data_table and $data_field\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Bootstrapping dataset ". $dataset." with $data_table and $data_field\n" if $self->DEBUG_LEVEL();
 
 	my $bootstrap_query = "SELECT
 					MAX($data_field)
 				FROM
 					".$data_table;
 	
-	print STDERR "\n\n", $bootstrap_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $bootstrap_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	my $bootstrap_sth = $self->{_dbh}->prepare($bootstrap_query) || croak __PACKAGE__.": $DBI::errstr";
 	$bootstrap_sth->execute() || croak __PACKAGE__.": $DBI::errstr";
@@ -188,7 +188,7 @@ sub Bootstrap
 
 	$self->_Create_Dataset();
 
-	print STDERR "Bootstrap successfull.\n" if $self->DEBUG_LEVEL();;
+	print STDERR "Bootstrap successfull.\n" if $self->DEBUG_LEVEL();
 
 	return $self->_race_for($dataset, $bootstrap_id + 1);
 }
@@ -296,7 +296,7 @@ sub _InitQueries
 				WHERE
 					".$self->COLUMN_PREFIX()."dataset = ?";
 
-	print STDERR "\n\n", $current_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $current_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_current_sth} = $self->{_dbh}->prepare_cached($current_query) || croak __PACKAGE__.": $DBI::errstr";
 
@@ -306,7 +306,7 @@ sub _InitQueries
 								".$self->COLUMN_PREFIX()."state_id
 							) values (?,?)";
 
-	print STDERR "\n\n", $init_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $init_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_init_sth} = $self->{_dbh}->prepare_cached($init_query) || croak __PACKAGE__.": $DBI::errstr"; 
 
@@ -321,7 +321,7 @@ sub _InitQueries
 					".$self->COLUMN_PREFIX()."state_id = ?";
 
 
-	print STDERR "\n\n", $race_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $race_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_race_sth} = $self->{_dbh}->prepare_cached($race_query) || croak __PACKAGE__.": $DBI::errstr"; 
 
@@ -334,7 +334,7 @@ sub _InitQueries
 					".$self->COLUMN_PREFIX()."released_id = ?";
 
 
-	print STDERR "\n\n", $release_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $release_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_race_release_sth} = $self->{_dbh}->prepare_cached($release_query) || croak __PACKAGE__.": $DBI::errstr";
 
@@ -346,7 +346,7 @@ sub _InitQueries
 				WHERE
 					".$self->COLUMN_PREFIX()."dataset = ?";
 
-	print STDERR "\n\n", $released_ids_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $released_ids_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_released_ids_sth} = $self->{_dbh}->prepare_cached($released_ids_query) || croak __PACKAGE__.": $DBI::errstr";
 			
@@ -359,7 +359,7 @@ sub _InitQueries
 					".$self->COLUMN_PREFIX()."released_id
 					) values (?,?)";
 
-	print STDERR "\n\n", $release_id_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $release_id_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_release_id_sth} = $self->{_dbh}->prepare_cached($release_id_query) || croak __PACKAGE__.": $DBI::errstr";
 
@@ -369,7 +369,7 @@ sub _InitQueries
 					WHERE
 						dataset = ?";
 
-	print STDERR "\n\n", $delete_state_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $delete_state_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_delete_state_sth} = $self->{_dbh}->prepare_cached($delete_state_query) || croak __PACKAGE__.": $DBI::errstr";
 
@@ -379,7 +379,7 @@ sub _InitQueries
 					WHERE
 						dataset = ?";
 	
-	print STDERR "\n\n", $delete_release_query, "\n\n" if $self->DEBUG_LEVEL();;
+	print STDERR "\n\n", $delete_release_query, "\n\n" if $self->DEBUG_LEVEL();
 
 	$self->{_delete_release_sth} = $self->{_dbh}->prepare_cached($delete_release_query) || croak __PACKAGE__.": $DBI::errstr";
 
@@ -432,13 +432,13 @@ DBIx::Sequence uses 2 tables for it's operation, namely the dbix_sequence_state 
 dbix_sequence_release tables. Those tables will be created if you run extended tests, if 
 not you will need to create them yourself. 
 
-dbix_sequence_state:
-| dataset  | varchar(50) |      
-| state_id | int(11)     |    
+	dbix_sequence_state:
+	| dataset  | varchar(50) |      
+	| state_id | int(11)     |    
 
-dbix_sequence_release:
-| dataset     | varchar(50) |     
-| released_id | int(11)     |     
+	dbix_sequence_release:
+	| dataset     | varchar(50) |     
+	| released_id | int(11)     |     
 
 Those table names are overloadable at your convenience, see the OVERLOADING section
 for details.
@@ -456,7 +456,7 @@ First, you need to create the sequence object:
 	my $sequence = new DBIx::Sequence({
 						db_user => 'scott',
 						db_pw => 'tiger',
-						dsn => 'dbi:mysql:scottdb',
+						db_dsn => 'dbi:mysql:scottdb',
 						});
 
 DBIx::Sequence can be used to manage multiple sets of ID's (perhaps you could have one dataset 
@@ -499,7 +499,7 @@ to ensure that no two processes can get the same ID.
 To make DBIx::Sequence forget about an existing dataset, you need to use the Delete_Dataset()
 method.
 
-	$sequence->Delete_Dataset();
+	$sequence->Delete_Dataset($dataset);
 
 This will clear all state and existence for this dataset and will also clear it's
 released id's. Note that if your application still uses this dataset, it will be
@@ -515,11 +515,15 @@ method.
 
 Bootstrap() takes 3 arguments. 
 
+=over 3
+
 =item * The dataset to bootstrap
 
 =item * The table from wich you will bootstrap
 
 =item * The field in the bootstrap table that will be used to bootstrap the dataset.
+
+=back
 
 Bootstrap will then sync up the DBIx::Sequence's state with the maximum id of the 
 'my_primary_field' in 'my_bootstrap_table'. The bootstrap field must be a numeric
@@ -537,6 +541,8 @@ This permits you to create a DBIx::Sequence that has different properties than
 the orignal one. The only thing you really have to overload to modify the behaviour
 of DBIx::Sequence are some constants:
 
+=over 3
+
 =item * STATE_TABLE : Defines the table used by DBIx::Sequence to store dataset's states.
 
 =item * RELEASE_TABLE : Defines the table used by DBIx::Sequence to store released id's.
@@ -548,6 +554,8 @@ of DBIx::Sequence are some constants:
 =item * ALLOW_ID_REUSE : When set to true, will allow the use of Release().
 
 =item * DEBUG_LEVEL : When set to true, will enable debugging to STDERR.
+
+=back
 
 So it is very easy to specify the behaviour of DBIx::Sequence that you wish to use
 by creating an overloaded class.
@@ -596,9 +604,13 @@ need to pass a second parameter to new().
 
 =head1 TODO
 
+=over 3
+
 =item * Implement multiple locking mechanism (semaphore, spin, db locker)
 
 =item * Implement pluggable locking module support
+
+=back
 
 =head1 AUTHOR
 
@@ -608,8 +620,8 @@ Benoit Beausejour, <bbeausej@pobox.com>
 
 This code was made possible by the help of individuals:
 
-	Patrick "Peanut" Bradley <pbradley@opendesk.com>
-	Philippe "Gozer" M. Chiasson <gozer@ectoplasm.dyndns.com>
+	Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
+	Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
 And the team of the SmartWorker Project <http://www.smartworker.org>
 
