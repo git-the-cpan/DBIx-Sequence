@@ -26,6 +26,7 @@
 		<LI><A HREF="#overloading">OVERLOADING</A></LI>
 	</UL>
 
+	<LI><A HREF="#special note on database handle options">SPECIAL NOTE ON DATABASE HANDLE OPTIONS</A></LI>
 	<LI><A HREF="#cvs and bleeding versions">CVS AND BLEEDING VERSIONS</A></LI>
 	<LI><A HREF="#todo">TODO</A></LI>
 	<LI><A HREF="#author">AUTHOR</A></LI>
@@ -213,6 +214,13 @@ need to pass a second parameter to new().</P>
 <PRE>
         my $sequence = new MySequence();
         my $next_id = $sequence-&gt;Next($dataset);</PRE>
+<P>
+<HR>
+<H1><A NAME="special note on database handle options">SPECIAL NOTE ON DATABASE HANDLE OPTIONS</A></H1>
+<P>DBIx::Sequence requires that the dbh object you passe to it has the AutoCommit flag
+set to 1. The main reason for this is that if AutoCommit is off, DBIx::Sequence will have
+to do an implicit <CODE>commit()</CODE> call, wich in most cases is a bad idea, especially when the dbh
+passed to the sequence object already has transactions prelogged in it.</P>
 <P>
 <HR>
 <H1><A NAME="cvs and bleeding versions">CVS AND BLEEDING VERSIONS</A></H1>

@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.0';
+$VERSION = '1.1';
 
 use DBI;
 use Carp;
@@ -606,6 +606,14 @@ need to pass a second parameter to new().
 	my $sequence = new MySequence();
 	my $next_id = $sequence->Next($dataset);
 
+
+
+=head1 SPECIAL NOTE ON DATABASE HANDLE OPTIONS
+
+DBIx::Sequence requires that the dbh object you passe to it has the AutoCommit flag
+set to 1. The main reason for this is that if AutoCommit is off, DBIx::Sequence will have
+to do an implicit commit() call, wich in most cases is a bad idea, especially when the dbh
+passed to the sequence object already has transactions prelogged in it. 
 
 
 =head1 CVS AND BLEEDING VERSIONS
