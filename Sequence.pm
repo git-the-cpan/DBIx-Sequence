@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.1';
+$VERSION = '1.2';
 
 use DBI;
 use Carp;
@@ -399,7 +399,7 @@ __END__
 
 =head1 NAME
 
-DBIx::Sequence - Perl extension for the generation of unique ID's in a database environnements.
+DBIx::Sequence - A simple SQL92 ID generator 
 
 =head1 SYNOPSIS
 
@@ -418,7 +418,8 @@ portable on multiple database environnements.
 
 This module implements a simple Spin Locker mechanism and is garanteed to return
 a unique value every time it is called, even with concurrent processes. It uses
-your database for its state storage with ANSI SQL92 compliant SQL. 
+your database for its state storage with ANSI SQL92 compliant SQL. All SQL queries
+inside DBIx::Sequence are pre cached and very efficient especially under mod_perl.
 
 =head1 INSTALLATION
 
@@ -626,6 +627,11 @@ The bleeding edge code is also available through anonymous CVS access via:
 
 cvs -d:pserver:anoncvs@cvs.flatlineconstruct.com:/home/cvs/anon checkout DBIx-Sequence 
 
+If you use this module in a project, please let me know!
+
+Your comments and rants are more than welcomed!
+
+
 =head1 TODO
 
 =over 3
@@ -644,8 +650,9 @@ Benoit Beausejour, <bbeausej@pobox.com>
 
 This code was made possible by the help of individuals:
 
-	Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
-	Philippe "Gozer" M. Chiasson <gozer@cpan.org>
+Patrick "Peanut" Bradley <pbradley@burstofindifference.com>
+
+Philippe "Gozer" M. Chiasson <gozer@cpan.org>
 
 Thanks to Uri Guttman for documentation checks ;)
 

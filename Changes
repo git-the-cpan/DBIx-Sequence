@@ -25,3 +25,7 @@ Revision history for Perl extension DBIx::Sequence.
 1.0  Thu Jul 8 14:34:12 2001
 	- Documentation fixups, CVS links added.
 	- Official 1.0 release.
+
+1.2  Sept 26 2001
+	- Documentation updates.
+	- Entered the module list in 1.1
