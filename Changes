@@ -1,0 +1,13 @@
+Revision history for Perl extension DBIx::Sequence.
+
+0.01  Thu Sep 21 15:04:16 2000
+	- original version; 
+0.02  Thu Jan 26 3:39:12 2001
+	- Implemented multiple datasets
+	- Deprecated the Dataset() method. 
+0.03  Thu Jun 1 00:01:11 2001
+	- Rewrote Makefile.PL using Getopt::Long
+	- Moved down state_table and release_table as new() options with defaults
+	- Some fix of the code where dataset name was not passed to CreateDataset
+	- Changed module name from DBI::Sequence to DBIx::Sequence as per DBI-dev request
+	- Official CPAN Release
