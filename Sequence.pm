@@ -2,7 +2,7 @@ package DBIx::Sequence;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use DBI;
 use Carp;
@@ -22,7 +22,8 @@ sub new
 	my $self = {};
 	$self = bless $self, $class_name;
 
-	$self->{_dbh} = $self->getDbh($args) || die 'Cannot get database handle';
+	$self->{_dbh} = $args->{dbh} || $self->getDbh($args) || die 'Cannot get Database handle';
+
 	$self->{state_table} = $args->{state_table};
 	$self->{release_table} = $args->{release_table};
 
@@ -186,11 +187,15 @@ sub Bootstrap
 
 	croak "Bootstrap() failed" if(!$bootstrap_id);
 
-	$self->_Create_Dataset();
+	$self->_Create_Dataset($dataset);
 
 	print STDERR "Bootstrap successfull.\n" if $self->DEBUG_LEVEL();
 
-	return $self->_race_for($dataset, $bootstrap_id + 1);
+	my $next_id = $self->_race_for($dataset, $bootstrap_id + 1);
+
+	print STDERR "Bootstrap next id is : $next_id\n" if $self->DEBUG_LEVEL();
+
+	return $next_id;
 }
 
 sub _Create_Dataset
@@ -394,14 +399,14 @@ __END__
 
 =head1 NAME
 
-DBIx::Sequence - Perl extension for the generation of unique ID's in a database environnement.
+DBIx::Sequence - Perl extension for the generation of unique ID's in a database environnements.
 
 =head1 SYNOPSIS
 
   use DBIx::Sequence;
 
-  my $sequence = new DBIx::Sequence('my_dataset');
-  my $next_id = $sequence->Next();
+  my $sequence = new DBIx::Sequence({ dbh => $dbh });
+  my $next_id = $sequence->Next('dataset');
 
 
 =head1 DESCRIPTION
@@ -413,7 +418,7 @@ portable on multiple database environnements.
 
 This module implements a simple Spin Locker mechanism and is garanteed to return
 a unique value every time it is called, even with concurrent processes. It uses
-your database for it's state storage with ANSI SQL92 compliant SQL. 
+your database for its state storage with ANSI SQL92 compliant SQL. 
 
 =head1 INSTALLATION
 
@@ -428,7 +433,7 @@ If you decide to run extended tests for the module, you will have to provide the
 make test with a DSN (connect string) to your database (dbi:Driver:db;host=hostname)
 and a valid username/password combination for a privileged user.
 
-DBIx::Sequence uses 2 tables for it's operation, namely the dbix_sequence_state and the
+DBIx::Sequence uses 2 tables for its operation, namely the dbix_sequence_state and the
 dbix_sequence_release tables. Those tables will be created if you run extended tests, if 
 not you will need to create them yourself. 
 
@@ -503,7 +508,7 @@ method.
 
 This will clear all state and existence for this dataset and will also clear it's
 released id's. Note that if your application still uses this dataset, it will be
-automatically recreated. (blank)
+automatically recreated blank.
 
 
 =head2 BOOTSTRAPPING A DATASET FROM EXISTING DATA
@@ -547,9 +552,9 @@ of DBIx::Sequence are some constants:
 
 =item * RELEASE_TABLE : Defines the table used by DBIx::Sequence to store released id's.
 
-=item * COLUMN_PREFIX : A string to be prepended to every columns in the internal SQL statements.
+=item * COLUMN_PREFIX : A string to be prepended to every column in the internal SQL statements.
 
-=item * DEFAULT_INIT_VALUE : Value used to init a dataset when it is first created.
+=item * DEFAULT_INIT_VALUE : Value used to initialize a dataset when it is first created.
 
 =item * ALLOW_ID_REUSE : When set to true, will allow the use of Release().
 
@@ -592,7 +597,7 @@ i.e.
 
 	1;
 
-Then, your code can use this class for it's sequencing. Notice that since we overloaded getDbh(), we don't
+Then, your code can use this class for its sequencing. Notice that since we overloaded getDbh(), we don't
 need to pass a second parameter to new().
 
 

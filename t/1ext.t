@@ -24,6 +24,7 @@ my $sequence = new DBIx::Sequence({
 						state_table => $config->{state_table},
 						release_table => $config->{release_table},
 						}) || &creve("Could now initiate a new DBIx::Sequence object.");
+
 my $ids = {};
 
 my $gen_ids = 1000;

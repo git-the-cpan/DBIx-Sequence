@@ -142,6 +142,7 @@ sub creve
 	WriteMakefile(
 	  'NAME'         => 'DBIx::Sequence',
 	  'VERSION_FROM' => 'Sequence.pm',
+	  'dist'    => { 'PREOP' => 'pod2text Sequence.pm > README; pod2html Sequence.pm > README.html', },
 	);
 	exit;
 }
